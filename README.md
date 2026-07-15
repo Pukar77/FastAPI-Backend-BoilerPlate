@@ -1,4 +1,4 @@
-# Ecommerce API
+# BoilerPlate for FastAPI
 
 A FastAPI boilerplate for ecommerce applications with SQLAlchemy ORM, PostgreSQL, JWT authentication, and Alembic migrations.
 
