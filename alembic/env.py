@@ -12,6 +12,9 @@ if config.config_file_name is not None:
 
 from app.database.base import Base
 from app.model import user_model
+from app.model import product_model
+from app.model import cart_model
+from app.model import order_model
 
 target_metadata = Base.metadata
 

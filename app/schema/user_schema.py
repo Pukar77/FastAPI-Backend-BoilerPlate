@@ -14,6 +14,7 @@ class SignUpUserOutput(BaseModel):
     email:str
     phone_number:str
     hashed_password:str
+    role:str
     created_at:datetime
     updated_at:datetime
 

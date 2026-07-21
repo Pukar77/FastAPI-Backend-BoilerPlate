@@ -9,7 +9,8 @@ from sqlalchemy.orm import Session
 
 from app.core.config import get_settings
 from app.database.session import get_db
-from app.core.exceptions import InvalidTokenException
+from app.core.exceptions import InvalidTokenException, ForbiddenException
+from app.model.user_model import User, UserRole
 
 
 settings = get_settings()
@@ -42,3 +43,23 @@ def decode_access_token(token: str) -> dict:
         return payload
     except JWTError:
         raise InvalidTokenException()
+
+
+def get_current_user(
+    credentials: HTTPAuthorizationCredentials = Depends(security_scheme),
+    db: Session = Depends(get_db),
+) -> User:
+    payload = decode_access_token(credentials.credentials)
+    email = payload.get("sub")
+    if not email:
+        raise InvalidTokenException()
+    user = db.query(User).filter(User.email == email).first()
+    if not user:
+        raise InvalidTokenException()
+    return user
+
+
+def require_admin(current_user: User = Depends(get_current_user)) -> User:
+    if current_user.role not in (UserRole.ADMIN, UserRole.SUPERADMIN):
+        raise ForbiddenException("Admin access required")
+    return current_user
